@@ -20,11 +20,35 @@ class ListMahasiswa extends Component {
       web3: null,
       jumlah_mahasiswa: 0,
       listMahasiswa: [],
+      listMahasiswa_fil: [],
       loaded: false,
       isOwner: false,
     }
   }
 
+  doFilterNama = event => {
+    var str = event.target.value;
+    this.setState({ listMahasiswa_fil: null });        
+    let filtered = [];
+    for (let i = 0; i < this.state.listMahasiswa.length; i++) {
+      if (this.state.listMahasiswa[i][1].toLowerCase().includes(str.toLowerCase())) {
+        filtered.push(this.state.listMahasiswa[i]);
+      }
+    }
+    this.setState({ listMahasiswa_fil: filtered });        
+  }
+
+  doFilterNIM = event => {
+    var str = event.target.value;
+    this.setState({ listMahasiswa_fil: null });        
+    let filtered = [];
+    for (let i = 0; i < this.state.listMahasiswa.length; i++) {
+      if (this.state.listMahasiswa[i][2].toLowerCase().includes(str.toLowerCase())) {
+        filtered.push(this.state.listMahasiswa[i]);
+      }
+    }
+    this.setState({ listMahasiswa_fil: filtered });        
+  }
   // getCandidates = async () => {
   //   let result = await this.state.EvotingInstance.methods.getCandidates().call();
 
@@ -77,6 +101,7 @@ class ListMahasiswa extends Component {
         console.log(all_mahasiswa);
 
         this.setState({ listMahasiswa: all_mahasiswa });
+        this.setState({ listMahasiswa_fil: all_mahasiswa });
 
       const owner = await this.state.BeasiswaInstance.methods.Admin().call();
       if (this.state.account === owner) {
@@ -95,9 +120,10 @@ class ListMahasiswa extends Component {
 
   render() {
     let daftarMahasiswa;
-    if (this.state.listMahasiswa) {
-        if (this.state.listMahasiswa.length > 0) {
-            daftarMahasiswa = this.state.listMahasiswa.map((Data_Mahasiswa) => {
+    if (this.state.listMahasiswa_fil) {
+        // console.log(this.state.listMahasiswa_fil);
+        if (this.state.listMahasiswa_fil.length > 0) {
+            daftarMahasiswa = this.state.listMahasiswa_fil.map((Data_Mahasiswa) => {
                 return (
                     <div className="candidate">
                         <div className="candidateName">
@@ -162,7 +188,7 @@ class ListMahasiswa extends Component {
               input='text' 
               placeholder='Filter NIM' 
               value={this.state.filter_nim} 
-              onChange={this.filterNim}
+              onChange={this.doFilterNIM}
             />
           </div>
           <div className="col-md-3">
@@ -170,7 +196,7 @@ class ListMahasiswa extends Component {
               input='text' 
               placeholder='Filter Nama' 
               value={this.state.filter_nama} 
-              onChange={this.filterNama}
+              onChange={this.doFilterNama}
             />
           </div>
           <div className="col-md-3"></div>

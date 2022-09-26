@@ -15,10 +15,23 @@ class MyRegist extends Component {
       account: null,
       web3: null,
       RegistSaya: null,
+      RegistSayaAll: null,
       dataDiriku: null,
       jmlPendaftar: null,
       isOwner: false
     }
+  }
+
+  doFilter = event => {
+    var str = event.target.value;
+    this.setState({ RegistSaya: null });        
+    let filtered = [];
+    for (let i = 0; i < this.state.RegistSayaAll.length; i++) {
+      if (this.state.RegistSayaAll[i]['namaBeasiswa'].toLowerCase().includes(str.toLowerCase())) {
+        filtered.push(this.state.RegistSayaAll[i]);
+      }
+    }
+    this.setState({ RegistSaya: filtered });        
   }
 
   componentDidMount = async () => {
@@ -70,6 +83,7 @@ class MyRegist extends Component {
         
       }
       this.setState({ RegistSaya: ListPendaftaranSaya });      
+      this.setState({ RegistSayaAll: ListPendaftaranSaya });      
 
 
     } catch (error) {
@@ -84,6 +98,7 @@ class MyRegist extends Component {
   render() {
     let myRegist = [];    
     if (this.state.RegistSaya) {
+      console.log(this.state.RegistSaya);
       if (this.state.RegistSaya.length > 0) {
         for (let j = 0; j < this.state.RegistSaya.length; j++) {
           // SELEKSI Tombol Verif
@@ -167,7 +182,7 @@ class MyRegist extends Component {
               input='text' 
               placeholder='Filter Nama Beasiswa' 
               value={this.state.filter_beasiswa} 
-              onChange={this.filterBeasiswa}
+              onChange={this.doFilter}
             />
           </div>
           <div className="col-md-4"></div>
