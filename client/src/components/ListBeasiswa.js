@@ -17,11 +17,24 @@ class ListBeasiswa extends Component {
       web3: null,
       jumlah_beasiswa: 0,
       total_pelamar: 0,
+      listBeasiswaFil: null,
       listBeasiswa: null,
       loaded: false,
       isOwner: false,
       statusterdaftar: []
     }
+  }
+
+  doFilter = event => {
+    var str = event.target.value;
+    this.setState({ listBeasiswaFil: null });        
+    let filtered = [];
+    for (let i = 0; i < this.state.listBeasiswa.length; i++) {
+      if (this.state.listBeasiswa[i][1].toLowerCase().includes(str.toLowerCase())) {
+        filtered.push(this.state.listBeasiswa[i]);
+      }
+    }
+    this.setState({ listBeasiswaFil: filtered });        
   }
 
   componentDidMount = async () => {
@@ -65,6 +78,7 @@ class ListBeasiswa extends Component {
       }
 
       this.setState({ listBeasiswa: daftar_beasiswa });
+      this.setState({ listBeasiswaFil: daftar_beasiswa });
       this.setState({ statusterdaftar: stateterdaftar });
 
       const owner = await this.state.BeasiswaInstance.methods.Admin().call();
@@ -84,8 +98,10 @@ class ListBeasiswa extends Component {
 
   render() {
     let daftarBeasiswa;
-    if (this.state.listBeasiswa) {
-      daftarBeasiswa = this.state.listBeasiswa.map((Data_Beasiswa) => {
+    if (this.state.listBeasiswaFil) {
+      // daftarBeasiswa = this.state.listBeasiswa.map((Data_Beasiswa) => {
+      // console.log(this.state.listBeasiswaFil);
+      daftarBeasiswa = this.state.listBeasiswaFil.map((Data_Beasiswa) => {
         var sisa_kuota = Data_Beasiswa.kuota - Data_Beasiswa.jumlah_pendaftar;
         return (
           <div className="candidate">
@@ -157,8 +173,8 @@ class ListBeasiswa extends Component {
             <FormControl 
               input='text' 
               placeholder='Filter Nama Beasiswa' 
-              value={this.state.filter_beasiswa} 
-              onChange={this.filterBeasiswa}
+              value={this.state.filterStr} 
+              onChange={this.doFilter}
             />
           </div>
           <div className="col-md-4"></div>
